@@ -2,80 +2,119 @@
 
 @{
     // Usa o ViewData que definimos no controlador
-    ViewData["Title"] = "Candidatos para a Vaga: " + ViewData["VagaTitulo"];
+    ViewData["Title"] = "Candidatos: " + ViewData["VagaTitulo"];
 }
 
-<h2>@ViewData["Title"]</h2>
-<hr />
+<!-- ================================================================
+    1. ENVOLVE TUDO NO PAGE-CONTAINER PARA CENTRALIZAR
+================================================================= -->
+<div class="page-container">
 
-<div class="alert alert-info">
-    <p><strong>Triagem Anónima (Etapa 1)</strong></p>
-    <p>Está a ver uma lista de candidatos anónimos. Conforme os requisitos do OneMatter, dados como nome, género e foto estão ocultos para garantir um processo de seleção justo e baseado 100% no mérito.</p>
-</div>
+    <!-- 2. USA O PAGE-HEADER PARA O TÍTULO E BOTÃO "VOLTAR" -->
+    <div class="page-header">
+        <h2 class="page-title">
+            <i class="fas fa-users me-2"></i>
+            @ViewData["Title"]
+        </h2>
+        <div class="page-header-actions">
+            <a asp-controller="Jobs" asp-action="Index" class="btn btn-outline-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Voltar para Vagas
+            </a>
+        </div>
+    </div>
 
-<table class="table table-hover">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.AnonymousId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Skills)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SkillScore)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @if (!Model.Any())
-        {
-            <tr>
-                <td colspan="5" class="text-center">Ainda não há candidatos para esta vaga.</td>
-            </tr>
-        }
+    <!-- 3. MANTÉM O ALERTA DE EXPLICAÇÃO -->
+    <div class="alert alert-info shadow-sm">
+        <h4 class="alert-heading"><i class="fas fa-user-secret me-2"></i>Triagem Anônima (Etapa 1)</h4>
+        <p>Conforme os requisitos do OneMatter, dados como nome, género e foto estão ocultos. Analise cada candidato abaixo com base 100% no mérito e aprove-os para a Etapa 2 (Teste Prático) se cumprirem os requisitos.</p>
+    </div>
 
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.AnonymousId)
-                </td>
-                <td>
-                    @* Vamos truncar a experiência para não poluir a tabela *@
-                    @Html.DisplayFor(modelItem => item.Skills)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Status)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.SkillScore)
-                </td>
-                <td class="text-end">
-                    @* Aqui é onde o recrutador toma a decisão.
-                        Vamos criar esta ação "Approve" a seguir.
-                    *@
-                    @if (item.Status == OneMatter.Models.ApplicationStatus.Pendente)
-                    {
-                        <form asp-action="Approve" method="post">
-                            <input type="hidden" name="applicationId" value="@item.ApplicationId" />
-                            <button type="submit" class="btn btn-sm btn-success">Aprovar para Teste (Etapa 2)</button>
-                        </form>
-                    }
-                    else
-                    {
-                        <span class="badge bg-secondary">Ação Concluída</span>
-                    }
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-<hr />
-<div>
-    <a asp-controller="Jobs" asp-action="Index" class="btn btn-outline-secondary">Voltar para a Lista de Vagas</a>
+    <!-- 4. VERIFICA SE O MODELO TEM ITENS -->
+    @if (!Model.Any())
+    {
+        <!-- 5. MOSTRA O "ESTADO VAZIO" PROFISSIONAL -->
+        <div class="card shadow-sm empty-state-card">
+            <div class="card-body text-center">
+                <i class="fas fa-user-clock fa-3x text-muted mb-3"></i>
+                <h4 class="h5">Nenhum candidato ainda</h4>
+                <p class="text-muted">Ainda não há candidatos inscritos para esta vaga.</p>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- 6. COLOCA A TABELA DENTRO DE UM CARD -->
+        <div class="card shadow-sm table-card">
+            <div class="card-body p-0">
+                <table class="table table-hover m-0">
+                    <thead class="table-light table-header-stylish">
+                        <tr>
+                            <th>@Html.DisplayNameFor(model => model.AnonymousId)</th>
+                            <th>@Html.DisplayNameFor(model => model.Skills)</th>
+                            <th>@Html.DisplayNameFor(model => model.SkillScore)</th>
+                            <th>@Html.DisplayNameFor(model => model.Status)</th>
+                            <th class="text-end">Ação</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td class="align-middle fw-bold">@Html.DisplayFor(modelItem => item.AnonymousId)</td>
+                                <td class="align-middle">@Html.DisplayFor(modelItem => item.Skills)</td>
+
+                                <!-- 7. ADICIONA BADGE PARA O SKILL SCORE -->
+                                <td class="align-middle">
+                                    <span class="badge bg-primary rounded-pill fs-small">@Html.DisplayFor(modelItem => item.SkillScore)</span>
+                                </td>
+
+                                <!-- 8. ADICIONA BADGES DE STATUS -->
+                                <td class="align-middle">
+                                    @{
+                                        string statusText = item.Status.ToString();
+                                        string badgeClass = "bg-secondary"; // Padrão
+
+                                        // Use apenas os status que existem no seu enum
+                                        switch (item.Status)
+                                        {
+                                            case OneMatter.Models.ApplicationStatus.Pendente:
+                                                badgeClass = "bg-warning text-dark"; // Amarelo para Pendente
+                                                statusText = "Pendente";
+                                                break;
+
+                                            default:
+                                                badgeClass = "bg-success"; // Assumindo que o default é Aprovado/Concluído
+                                                statusText = item.Status.ToString(); // Exibe o nome real do enum
+                                                break;
+                                        }
+                                    }
+                                    <span class="badge @badgeClass rounded-pill fs-small">@statusText</span>
+                                </td>
+
+                                <!-- 9. BOTÃO DE AÇÃO OU STATUS (ALINHADO À DIREITA) -->
+                                <td class="text-end align-middle">
+                                    @if (item.Status == OneMatter.Models.ApplicationStatus.Pendente)
+                                    {
+                                        <form asp-action="Approve" method="post" class="m-0">
+                                            <input type="hidden" name="applicationId" value="@item.ApplicationId" />
+                                            <button type-="submit" class="btn btn-sm btn-success">
+                                                <i class="fas fa-check me-1"></i> Aprovar (Etapa 2)
+                                            </button>
+                                        </form>
+                                    }
+                                    else
+                                    {
+                                        <!-- Mostra um "botão" desabilitado para consistência -->
+                                        <button class="btn btn-sm btn-outline-secondary disabled" disabled>
+                                            Ação Concluída
+                                        </button>
+                                    }
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
 </div>

@@ -1,8 +1,43 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@using Microsoft.AspNetCore.Identity
+@inject SignInManager<IdentityUser> SignInManager
+
+@{
+    ViewData["Title"] = "Onde o Talento Encontra Propósito - OneMatter";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section class="hero-landing">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 col-xl-8 text-center" data-aos="fade-up">
+
+                <h1 class="display-3 fw-bolder mb-4">
+                    Onde o <span class="text-gradient">talento</span> encontra o <span class="text-gradient">propósito.</span>
+                </h1>
+
+                <p class="lead text-secondary mb-5">
+                    Bem-vindo ao Portal do Recrutador. A nossa plataforma remove o viés inconsciente
+                    do seu processo seletivo, focando 100% no mérito e nas habilidades.
+                </p>
+
+                <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+                    @if (SignInManager.IsSignedIn(User))
+                    {
+                        <a class="btn btn-primary btn-lg px-4" asp-controller="Jobs" asp-action="Index">
+                            <i class="fas fa-briefcase me-2"></i>Gerir as Minhas Vagas
+                        </a>
+                    }
+                    else
+                    {
+                        <a class="btn btn-primary btn-lg px-4" asp-area="Identity" asp-page="/Account/Login">
+                            <i class="fas fa-sign-in-alt me-2"></i>Login do Recrutador
+                        </a>
+                        <a class="btn btn-outline-secondary btn-lg px-4" asp-area="Identity" asp-page="/Account/Register">
+                            <i class="fas fa-user-plus me-2"></i>Registar
+                        </a>
+                    }
+                </div>
+
+            </div>
+        </div>
+    </div>
+</section>

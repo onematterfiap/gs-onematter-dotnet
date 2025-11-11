@@ -1,31 +1,262 @@
+/*
+ * 1. DEFINIÇÃO DAS CORES (Mantidas)
+ */
+:root {
+    --cor-laranja: #EA580C;
+    --cor-azul-ardosia: #0F172A;
+    --cor-cinza-gelo: #F1F5F9;
+    --cor-cinza-medio: #64748B;
+    --cor-verde-sucesso: #10B981;
+    --cor-vermelho-alerta: #EF4444;
+    --cor-branca: #FFFFFF;
+    --cor-cinza-claro: #E2E8F0;
+    --cor-gradiente-um: #F7971E;
+    --cor-gradiente-dois: #FFD200;
+    /* Override do Bootstrap */
+    --bs-primary: var(--cor-laranja);
+    --bs-primary-rgb: 234, 88, 12;
+    --bs-danger: var(--cor-vermelho-alerta);
+    --bs-danger-rgb: 239, 68, 68;
+    --bs-success: var(--cor-verde-sucesso);
+    --bs-success-rgb: 16, 185, 129;
+    --bs-link-color: var(--cor-laranja);
+}
+
+
+/*
+ * 2. LAYOUT (CORREÇÃO DEFINITIVA DO STICKY FOOTER)
+ */
 html {
-  font-size: 14px;
-}
-
-@media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
-html {
-  position: relative;
-  min-height: 100%;
+    scroll-behavior: smooth;
 }
 
 body {
-  margin-bottom: 60px;
+    font-family: 'Inter', sans-serif;
+    color: var(--cor-azul-ardosia);
+    background-color: var(--cor-branca);
+    line-height: 1.6;
+    padding-top: 80px; /* Adiciona espaço para a navbar fixa */
+    /* --- ESTA É A CORREÇÃO --- */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    /* ----------------------------- */
 }
 
-.form-floating > .form-control-plaintext::placeholder, .form-floating > .form-control::placeholder {
-  color: var(--bs-secondary-color);
-  text-align: end;
+main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
 }
 
-.form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
-  text-align: start;
+/*
+ * 3. ESTILIZAR OS BOTÕES (Mantidos)
+ */
+.btn {
+    border-radius: 0.5rem;
+    padding: 0.8rem 1.8rem;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.btn-primary {
+    --bs-btn-bg: var(--cor-laranja);
+    --bs-btn-border-color: var(--cor-laranja);
+    --bs-btn-hover-bg: #C2410C;
+    --bs-btn-hover-border-color: #C2410C;
+    --bs-btn-color: var(--cor-branca);
+    --bs-btn-hover-color: var(--cor-branca);
+    box-shadow: 0 4px 12px rgba(234, 88, 12, 0.3);
+}
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(234, 88, 12, 0.4);
+    }
+
+.btn-outline-secondary {
+    --bs-btn-color: var(--cor-laranja);
+    --bs-btn-border-color: var(--cor-laranja);
+    --bs-btn-hover-bg: var(--cor-laranja);
+    --bs-btn-hover-color: var(--cor-branca);
+}
+
+/* ... (Estilos .btn-success e .btn-danger mantidos se você os usar) ... */
+
+
+/*
+ * 4. ESTILIZAR O MENU DE NAVEGAÇÃO (Mantido)
+ */
+.navbar {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    z-index: 1030;
+}
+/* ... (Restante do CSS da navbar mantido) ... */
+
+
+/*
+ * 5. ESTILIZAR TÍTULOS E FORMULÁRIOS (Mantidos)
+ */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', sans-serif;
+    color: var(--cor-azul-ardosia);
+    font-weight: 800;
+}
+
+.form-control {
+    background-color: var(--cor-cinza-gelo);
+    border: 1px solid var(--cor-cinza-claro);
+    /* ... (Restante do CSS de formulário mantido) ... */
+}
+
+
+/*
+ * 6. NOVA SEÇÃO HERO-LANDING (Substitui todo o CSS da landing page antiga)
+ */
+.hero-landing {
+    padding: 4rem 1.5rem; /* Padding vertical */
+    width: 100%; /* Garante que ocupe o espaço em <main> */
+}
+
+.text-gradient {
+    background: linear-gradient(90deg, var(--cor-laranja), var(--cor-azul-ardosia));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+}
+
+
+/*
+ * 7. FOOTER (Estilo padrão Bootstrap)
+ */
+footer {
+    flex-shrink: 0;
+}
+
+/*
+ * 8. CORREÇÃO ALINHAMENTO NAVBAR LOGIN
+ */
+
+/* * Remove qualquer margem de formulários dentro dos itens da navbar 
+ * (este é o provável culpado pelo desalinhamento) 
+ */
+.navbar-nav .nav-item form {
+    margin-bottom: 0;
+    padding: 0;
+}
+
+/* * Garante que o botão de logout (que é um 'nav-link') 
+ * tenha o mesmo espaçamento e alinhamento dos links normais.
+ */
+.navbar-nav .nav-item .btn.nav-link {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+/*
+ * 9. ESTILOS DE PÁGINA INTERNA (App)
+ */
+
+/* Container principal para páginas como "Gerir Vagas" */
+.page-container {
+    width: 100%;
+    max-width: 1200px; /* <-- Define a largura máxima */
+    margin: 0 auto; /* <-- Centraliza o container */
+    padding: 2.5rem 1.5rem; /* Espaçamento interno */
+}
+
+/* Cabeçalho da página (Título + Botão) */
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.page-title {
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 700;
+    color: var(--cor-azul-ardosia);
+    margin: 0;
+}
+
+/* Alinha os botões da tabela verticalmente */
+.table .align-middle {
+    vertical-align: middle;
+}
+
+/* Garante que o card da tabela ocupe a largura */
+.card {
+    width: 100%;
+}
+
+/*
+ * 10. ESTILOS DE TABELA PROFISSIONAL
+ */
+
+/* Remove a borda padrão do Card quando a tabela está dentro */
+.table-card {
+    border: none;
+    border-radius: 0.75rem; /* Bordas mais arredondadas */
+    overflow: hidden; /* Garante que a tabela respeite as bordas */
+}
+
+/* Deixa o cabeçalho da tabela mais "pro" */
+.table-header-stylish th {
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--cor-cinza-medio);
+}
+
+/* Estilo para a célula combinada "Título + Localização" */
+.job-title-location {
+    line-height: 1.4;
+}
+
+/* Badge de status um pouco menor e mais limpa */
+.fs-small {
+    font-size: 0.8em;
+    padding: 0.4em 0.8em;
+}
+
+/* Barra de busca no cabeçalho do card */
+.table-search-form .form-control,
+.table-search-form .input-group-text {
+    border-radius: 0.5rem;
+}
+
+    .table-search-form .form-control:focus {
+        background-color: #fff;
+        box-shadow: none;
+        border: 1px solid var(--cor-laranja);
+    }
+
+/* Card de "Estado Vazio" */
+.empty-state-card {
+    border: 2px dashed var(--cor-cinza-claro);
+    background-color: var(--cor-cinza-gelo);
+}
+
+    .empty-state-card .card-body {
+        padding: 4rem 2rem;
+    }
+
+/*
+ * 11. CENTRALIZAÇÃO DA LANDING PAGE (INDEX)
+ */
+
+/* * Faz a seção .hero-landing (que está dentro do <main> flex) 
+ * crescer para ocupar todo o espaço vertical.
+*/
+.hero-landing {
+    flex-grow: 1;
+    /* E agora, centraliza seu próprio conteúdo verticalmente */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
 }
