@@ -1,0 +1,81 @@
+﻿@model IEnumerable<OneMatter.Models.ViewModels.AnonymousCandidateViewModel>
+
+@{
+    // Usa o ViewData que definimos no controlador
+    ViewData["Title"] = "Candidatos para a Vaga: " + ViewData["VagaTitulo"];
+}
+
+<h2>@ViewData["Title"]</h2>
+<hr />
+
+<div class="alert alert-info">
+    <p><strong>Triagem Anónima (Etapa 1)</strong></p>
+    <p>Está a ver uma lista de candidatos anónimos. Conforme os requisitos do OneMatter, dados como nome, género e foto estão ocultos para garantir um processo de seleção justo e baseado 100% no mérito.</p>
+</div>
+
+<table class="table table-hover">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.AnonymousId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Skills)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.SkillScore)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (!Model.Any())
+        {
+            <tr>
+                <td colspan="5" class="text-center">Ainda não há candidatos para esta vaga.</td>
+            </tr>
+        }
+
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.AnonymousId)
+                </td>
+                <td>
+                    @* Vamos truncar a experiência para não poluir a tabela *@
+                    @Html.DisplayFor(modelItem => item.Skills)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Status)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.SkillScore)
+                </td>
+                <td class="text-end">
+                    @* Aqui é onde o recrutador toma a decisão.
+                        Vamos criar esta ação "Approve" a seguir.
+                    *@
+                    @if (item.Status == OneMatter.Models.ApplicationStatus.Pendente)
+                    {
+                        <form asp-action="Approve" method="post">
+                            <input type="hidden" name="applicationId" value="@item.ApplicationId" />
+                            <button type="submit" class="btn btn-sm btn-success">Aprovar para Teste (Etapa 2)</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <span class="badge bg-secondary">Ação Concluída</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<hr />
+<div>
+    <a asp-controller="Jobs" asp-action="Index" class="btn btn-outline-secondary">Voltar para a Lista de Vagas</a>
+</div>
