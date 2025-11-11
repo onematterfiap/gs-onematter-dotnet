@@ -18,7 +18,7 @@
                 @* O 'asp-for' liga este label ao nosso ViewModel *@
                 <label asp-for="Title" class="control-label"></label>
                 <input asp-for="Title" class="form-control" />
-                @* O 'asp-validation-for' mostra o erro específico deste campo (ex: "O título é obrigatório.") *@
+                @* O 'asp-validation-for' mostra o erro específico desse campo (ex: "O título é obrigatório.") *@
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
 
@@ -45,7 +45,7 @@
     </div>
 </div>
 
-@* Esta secção é necessária para que a validação do lado do cliente (no browser) funcione *@
+@* Essa secção é necessária para que a validação do lado do cliente (no browser) funcione *@
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");

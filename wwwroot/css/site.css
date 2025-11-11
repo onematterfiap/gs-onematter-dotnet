@@ -1,6 +1,18 @@
-/*
- * 1. DEFINIÇÃO DAS CORES (Mantidas)
- */
+/* ===================================================================
+   ÍNDICE (Table of Contents)
+   
+   1. Variáveis Globais (:root)
+   2. Layout Global & Tipografia (html, body, main, h1-h6)
+   3. Componentes Globais (btn, form-control, text-gradient)
+   4. Layout Estrutural (Navbar, Footer)
+   5. Estilos de Página: Landing Page (Home)
+   6. Estilos de Página: Páginas Internas (App)
+=================================================================== */
+
+
+/* ===================================================================
+   1. Variáveis Globais (:root)
+=================================================================== */
 :root {
     --cor-laranja: #EA580C;
     --cor-azul-ardosia: #0F172A;
@@ -23,9 +35,9 @@
 }
 
 
-/*
- * 2. LAYOUT (CORREÇÃO DEFINITIVA DO STICKY FOOTER)
- */
+/* ===================================================================
+   2. Layout Global & Tipografia
+=================================================================== */
 html {
     scroll-behavior: smooth;
 }
@@ -35,23 +47,34 @@ body {
     color: var(--cor-azul-ardosia);
     background-color: var(--cor-branca);
     line-height: 1.6;
-    padding-top: 80px; /* Adiciona espaço para a navbar fixa */
-    /* --- ESTA É A CORREÇÃO --- */
+    padding-top: 80px; /* Espaço para a navbar fixa */
+    /* --- Correção Sticky Footer --- */
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    /* ----------------------------- */
 }
 
+/* * Garante que o <main> cresça e empurre o footer para baixo.
+*/
 main {
     flex-grow: 1;
     display: flex;
     flex-direction: column;
 }
 
-/*
- * 3. ESTILIZAR OS BOTÕES (Mantidos)
- */
+/* Títulos principais (Fonte Montserrat) */
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Montserrat', sans-serif;
+    color: var(--cor-azul-ardosia);
+    font-weight: 800;
+}
+
+
+/* ===================================================================
+   3. Componentes Globais
+=================================================================== */
+
+/* --- Botões (Buttons) --- */
 .btn {
     border-radius: 0.5rem;
     padding: 0.8rem 1.8rem;
@@ -81,43 +104,22 @@ main {
     --bs-btn-hover-color: var(--cor-branca);
 }
 
-/* ... (Estilos .btn-success e .btn-danger mantidos se você os usar) ... */
-
-
-/*
- * 4. ESTILIZAR O MENU DE NAVEGAÇÃO (Mantido)
- */
-.navbar {
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    z-index: 1030;
-}
-/* ... (Restante do CSS da navbar mantido) ... */
-
-
-/*
- * 5. ESTILIZAR TÍTULOS E FORMULÁRIOS (Mantidos)
- */
-h1, h2, h3, h4, h5, h6 {
-    font-family: 'Montserrat', sans-serif;
-    color: var(--cor-azul-ardosia);
-    font-weight: 800;
-}
-
+/* --- Formulários (Forms) --- */
 .form-control {
     background-color: var(--cor-cinza-gelo);
     border: 1px solid var(--cor-cinza-claro);
-    /* ... (Restante do CSS de formulário mantido) ... */
+    border-radius: 0.4rem;
+    padding: 0.75rem 1rem;
+    transition: all 0.3s ease;
 }
 
+    .form-control:focus {
+        background-color: var(--cor-branca);
+        border-color: var(--cor-laranja);
+        box-shadow: 0 0 0 0.25rem rgba(234, 88, 12, 0.25);
+    }
 
-/*
- * 6. NOVA SEÇÃO HERO-LANDING (Substitui todo o CSS da landing page antiga)
- */
-.hero-landing {
-    padding: 4rem 1.5rem; /* Padding vertical */
-    width: 100%; /* Garante que ocupe o espaço em <main> */
-}
-
+/* --- Utilitários (Utilities) --- */
 .text-gradient {
     background: linear-gradient(90deg, var(--cor-laranja), var(--cor-azul-ardosia));
     -webkit-background-clip: text;
@@ -127,52 +129,70 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 
-/*
- * 7. FOOTER (Estilo padrão Bootstrap)
- */
-footer {
-    flex-shrink: 0;
+/* ===================================================================
+   4. Layout Estrutural
+=================================================================== */
+
+/* --- Navbar (Menu Superior) --- */
+.navbar {
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+    z-index: 1030; /* Garante que fique acima de outros conteúdos */
 }
 
-/*
- * 8. CORREÇÃO ALINHAMENTO NAVBAR LOGIN
- */
-
-/* * Remove qualquer margem de formulários dentro dos itens da navbar 
- * (este é o provável culpado pelo desalinhamento) 
- */
+/* Correção do alinhamento do formulário de Logout */
 .navbar-nav .nav-item form {
     margin-bottom: 0;
     padding: 0;
 }
 
-/* * Garante que o botão de logout (que é um 'nav-link') 
- * tenha o mesmo espaçamento e alinhamento dos links normais.
- */
+/* Garante que o botão Logout se alinhe com os links */
 .navbar-nav .nav-item .btn.nav-link {
     padding-top: 0.5rem;
     padding-bottom: 0.5rem;
 }
 
-/*
- * 9. ESTILOS DE PÁGINA INTERNA (App)
- */
+/* --- Footer (Rodapé) --- */
+footer {
+    /* Garante que o footer não encolha (parte do Sticky Footer) */
+    flex-shrink: 0;
+}
 
-/* Container principal para páginas como "Gerir Vagas" */
+
+/* ===================================================================
+   5. Estilos de Página: Landing Page (Home)
+=================================================================== */
+
+/* Container da seção Hero na Home */
+.hero-landing {
+    padding: 4rem 1.5rem;
+    width: 100%;
+    /* Faz a seção crescer e ocupar o espaço de <main> */
+    flex-grow: 1;
+    /* Centraliza o conteúdo verticalmente */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+
+/* ===================================================================
+   6. Estilos de Página: Páginas Internas (App)
+=================================================================== */
+
+/* --- Layout da Página (App) --- */
 .page-container {
     width: 100%;
-    max-width: 1200px; /* <-- Define a largura máxima */
-    margin: 0 auto; /* <-- Centraliza o container */
+    max-width: 1200px; /* Largura máxima para o conteúdo */
+    margin: 0 auto; /* Centraliza */
     padding: 2.5rem 1.5rem; /* Espaçamento interno */
 }
 
-/* Cabeçalho da página (Título + Botão) */
 .page-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 2rem;
-    flex-wrap: wrap;
+    flex-wrap: wrap; /* Quebra de linha em telas pequenas */
     gap: 1rem;
 }
 
@@ -183,28 +203,22 @@ footer {
     margin: 0;
 }
 
-/* Alinha os botões da tabela verticalmente */
+/* --- Tabela Profissional --- */
 .table .align-middle {
     vertical-align: middle;
 }
 
-/* Garante que o card da tabela ocupe a largura */
 .card {
     width: 100%;
 }
 
-/*
- * 10. ESTILOS DE TABELA PROFISSIONAL
- */
-
-/* Remove a borda padrão do Card quando a tabela está dentro */
 .table-card {
     border: none;
     border-radius: 0.75rem; /* Bordas mais arredondadas */
-    overflow: hidden; /* Garante que a tabela respeite as bordas */
+    overflow: hidden; /* Garante que a <table> respeite as bordas */
 }
 
-/* Deixa o cabeçalho da tabela mais "pro" */
+/* Cabeçalho da tabela */
 .table-header-stylish th {
     font-size: 0.75rem;
     font-weight: 600;
@@ -213,18 +227,18 @@ footer {
     color: var(--cor-cinza-medio);
 }
 
-/* Estilo para a célula combinada "Título + Localização" */
+/* Célula combinada "Título + Localização" */
 .job-title-location {
     line-height: 1.4;
 }
 
-/* Badge de status um pouco menor e mais limpa */
+/* Badge de status (menor) */
 .fs-small {
     font-size: 0.8em;
     padding: 0.4em 0.8em;
 }
 
-/* Barra de busca no cabeçalho do card */
+/* Barra de busca no card */
 .table-search-form .form-control,
 .table-search-form .input-group-text {
     border-radius: 0.5rem;
@@ -236,7 +250,7 @@ footer {
         border: 1px solid var(--cor-laranja);
     }
 
-/* Card de "Estado Vazio" */
+/* Card de "Estado Vazio" (ex: Nenhuma vaga) */
 .empty-state-card {
     border: 2px dashed var(--cor-cinza-claro);
     background-color: var(--cor-cinza-gelo);
@@ -245,18 +259,3 @@ footer {
     .empty-state-card .card-body {
         padding: 4rem 2rem;
     }
-
-/*
- * 11. CENTRALIZAÇÃO DA LANDING PAGE (INDEX)
- */
-
-/* * Faz a seção .hero-landing (que está dentro do <main> flex) 
- * crescer para ocupar todo o espaço vertical.
-*/
-.hero-landing {
-    flex-grow: 1;
-    /* E agora, centraliza seu próprio conteúdo verticalmente */
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-}
