@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using OneMatter.Data;
+using OneMatter.Data.Repositories;
+using OneMatter.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +17,10 @@ builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false)
     .AddEntityFrameworkStores<ApplicationDbContext>()
     .AddErrorDescriber<PortugueseIdentityErrorDescriber>();
+
+// Registro das Dependências (DI)
+builder.Services.AddScoped<IJobRepository, JobRepository>();
+builder.Services.AddScoped<JobService>();
 
 builder.Services.AddControllersWithViews();
 
@@ -37,6 +43,12 @@ app.UseStaticFiles();
 app.UseRouting();
 
 app.UseAuthorization();
+
+// Rota Personalizada
+app.MapControllerRoute(
+    name: "vagas",
+    pattern: "oportunidades/{action}/{id?}",
+    defaults: new { controller = "Jobs" });
 
 app.MapControllerRoute(
     name: "default",

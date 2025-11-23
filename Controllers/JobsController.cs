@@ -1,28 +1,27 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using OneMatter.Data;
 using OneMatter.Models;
 using OneMatter.Models.ViewModels;
+using OneMatter.Services;
 using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
-using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
 
 namespace OneMatter.Controllers
 {
     [Authorize]
     public class JobsController : Controller
     {
-        private readonly ApplicationDbContext _context;
-
-        public JobsController(ApplicationDbContext context)
+        private readonly JobService _service;
+        public JobsController(JobService service)
         {
-            _context = context;
+            _service = service;
         }
 
         // --- 1. LISTAR (INDEX) ---
         // GET: /Jobs/
         public async Task<IActionResult> Index()
         {
-            var vagas = await _context.Jobs.ToListAsync();
+            var vagas = await _service.GetAllJobsAsync();
             return View(vagas);
         }
 
@@ -42,14 +41,12 @@ namespace OneMatter.Controllers
         {
             if (ModelState.IsValid)
             {
-                var novaVaga = new Job(
+                await _service.CreateJobAsync(
                     viewModel.Title,
                     viewModel.Description,
                     viewModel.Location
                 );
-                _context.Jobs.Add(novaVaga);
-                await _context.SaveChangesAsync();
-                return RedirectToAction("Index");
+                return RedirectToAction(nameof(Index));
             }
             return View(viewModel);
         }
@@ -58,16 +55,10 @@ namespace OneMatter.Controllers
         // GET: /Jobs/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var vaga = await _context.Jobs.FindAsync(id);
-            if (vaga == null)
-            {
-                return NotFound();
-            }
+            var vaga = await _service.GetJobByIdAsync(id.Value);
+            if (vaga == null) return NotFound();
 
             var viewModel = new CreateJobViewModel
             {
@@ -85,37 +76,26 @@ namespace OneMatter.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, CreateJobViewModel viewModel)
         {
-            var vagaParaAtualizar = await _context.Jobs.FindAsync(id);
-            if (vagaParaAtualizar == null)
-            {
-                return NotFound();
-            }
-
             if (ModelState.IsValid)
             {
                 try
                 {
-                    vagaParaAtualizar.UpdateDetails(
+                    await _service.UpdateJobAsync(
+                        id,
                         viewModel.Title,
                         viewModel.Description,
                         viewModel.Location
                     );
-
-                    _context.Update(vagaParaAtualizar);
-                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
-                catch (DbUpdateConcurrencyException)
+                catch (KeyNotFoundException)
                 {
-                    if (!_context.Jobs.Any(e => e.Id == vagaParaAtualizar.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
+                    return NotFound();
                 }
-                return RedirectToAction("Index");
+                catch (InvalidOperationException ex) // Captura regras de negócio (ex: vaga fechada)
+                {
+                    ModelState.AddModelError("", ex.Message);
+                }
             }
             return View(viewModel);
         }
@@ -124,18 +104,10 @@ namespace OneMatter.Controllers
         // GET: /Jobs/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var vaga = await _context.Jobs
-                .FirstOrDefaultAsync(m => m.Id == id);
-
-            if (vaga == null)
-            {
-                return NotFound();
-            }
+            var vaga = await _service.GetJobByIdAsync(id.Value);
+            if (vaga == null) return NotFound();
 
             return View(vaga);
         }
@@ -144,18 +116,10 @@ namespace OneMatter.Controllers
         // GET: /Jobs/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
-            if (id == null)
-            {
-                return NotFound();
-            }
+            if (id == null) return NotFound();
 
-            var vaga = await _context.Jobs
-                .FirstOrDefaultAsync(m => m.Id == id);
-
-            if (vaga == null)
-            {
-                return NotFound();
-            }
+            var vaga = await _service.GetJobByIdAsync(id.Value);
+            if (vaga == null) return NotFound();
 
             return View(vaga);
         }
@@ -166,14 +130,8 @@ namespace OneMatter.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var vaga = await _context.Jobs.FindAsync(id);
-            if (vaga != null)
-            {
-                _context.Jobs.Remove(vaga);
-                await _context.SaveChangesAsync();
-            }
-
-            return RedirectToAction("Index");
+            await _service.DeleteJobAsync(id);
+            return RedirectToAction(nameof(Index));
         }
     }
 }
